@@ -32,6 +32,7 @@ import { refetchMarketData } from 'utils/queryConnector';
 import { getErrorToastOptions, getSuccessToastOptions } from 'config/toast';
 import MaturityPhaseOpenBid from './MaturityPhaseOpenBid';
 import { MAX_GAS_LIMIT } from 'constants/network';
+import MetaTags from 'react-meta-tags';
 
 type MarketDetailsProps = {
     market: MarketData;
@@ -106,72 +107,90 @@ const MarketDetails: React.FC<MarketDetailsProps> = ({ market }) => {
     };
 
     return (
-        <MarketContainer>
-            <MarketTitle fontSize={25} marginBottom={40}>
-                {market.question}
-            </MarketTitle>
+        <>
+            <MetaTags>
+                <title>Page 1</title>
+                <meta name="description" content="Some description." />
+                <meta property="og:title" content="MyApp" />
+            </MetaTags>
+            <MarketContainer>
+                <MarketTitle fontSize={25} marginBottom={40}>
+                    {market.question}
+                </MarketTitle>
 
-            {market.isTicketType && market.status === MarketStatusEnum.Open && (
-                <PositioningPhaseTicket market={market} />
-            )}
-            {market.isTicketType && market.status !== MarketStatusEnum.Open && <MaturityPhaseTicket market={market} />}
+                {market.isTicketType && market.status === MarketStatusEnum.Open && (
+                    <PositioningPhaseTicket market={market} />
+                )}
+                {market.isTicketType && market.status !== MarketStatusEnum.Open && (
+                    <MaturityPhaseTicket market={market} />
+                )}
 
-            {!market.isTicketType && market.status === MarketStatusEnum.Open && (
-                <PositioningPhaseOpenBid market={market} />
-            )}
-            {!market.isTicketType && market.status !== MarketStatusEnum.Open && (
-                <MaturityPhaseOpenBid market={market} />
-            )}
-            {showPause && (
-                <ButtonContainer>
-                    <Button type="secondary" disabled={isPausing} onClick={handlePause}>
-                        {!isPausing ? t('market.button.pause-market-label') : t('market.button.pause-progress-label')}
-                    </Button>
-                </ButtonContainer>
-            )}
-            <StatusSourceContainer>
-                <StatusSourceInfo />
-                <MarketStatus market={market} fontSize={25} fontWeight={700} isClaimAvailable={isClaimAvailable} />
-                {showNumberOfOpenDisputes ? <DataSource dataSource={market.dataSource} /> : <StatusSourceInfo />}
-            </StatusSourceContainer>
-            <Footer>
-                <Tags tags={market.tags} />
-                <FlexDivColumnCentered>
-                    <Info>
-                        <InfoLabel>{t('market.total-pool-size-label')}:</InfoLabel>
-                        <InfoContent>
-                            {formatCurrencyWithKey(PAYMENT_CURRENCY, market.poolSize, DEFAULT_CURRENCY_DECIMALS, true)}
-                        </InfoContent>
-                    </Info>
-                    <Info>
-                        <InfoLabel>{t('market.number-of-participants-label')}:</InfoLabel>
-                        <InfoContent>{market.numberOfParticipants}</InfoContent>
-                    </Info>
-                </FlexDivColumnCentered>
-                <OpenDisputeContainer>
-                    {showNumberOfOpenDisputes ? (
-                        <OpenDisputeInfo
-                            numberOfOpenDisputes={market.isMarketClosedForDisputes ? 0 : market.numberOfOpenDisputes}
-                        >
-                            {t('market.open-disputes-label')}
-                        </OpenDisputeInfo>
-                    ) : (
-                        <DataSource dataSource={market.dataSource} />
-                    )}
-                    {canOpenDispute && (
-                        <SPAAnchor href={buildOpenDisputeLink(market.address)}>
-                            <OpenDisputeButton type="secondary">
-                                {t(
-                                    `market.button.${
-                                        market.isOpen ? 'dispute-market-label' : 'dispute-resolution-label'
-                                    }`
+                {!market.isTicketType && market.status === MarketStatusEnum.Open && (
+                    <PositioningPhaseOpenBid market={market} />
+                )}
+                {!market.isTicketType && market.status !== MarketStatusEnum.Open && (
+                    <MaturityPhaseOpenBid market={market} />
+                )}
+                {showPause && (
+                    <ButtonContainer>
+                        <Button type="secondary" disabled={isPausing} onClick={handlePause}>
+                            {!isPausing
+                                ? t('market.button.pause-market-label')
+                                : t('market.button.pause-progress-label')}
+                        </Button>
+                    </ButtonContainer>
+                )}
+                <StatusSourceContainer>
+                    <StatusSourceInfo />
+                    <MarketStatus market={market} fontSize={25} fontWeight={700} isClaimAvailable={isClaimAvailable} />
+                    {showNumberOfOpenDisputes ? <DataSource dataSource={market.dataSource} /> : <StatusSourceInfo />}
+                </StatusSourceContainer>
+                <Footer>
+                    <Tags tags={market.tags} />
+                    <FlexDivColumnCentered>
+                        <Info>
+                            <InfoLabel>{t('market.total-pool-size-label')}:</InfoLabel>
+                            <InfoContent>
+                                {formatCurrencyWithKey(
+                                    PAYMENT_CURRENCY,
+                                    market.poolSize,
+                                    DEFAULT_CURRENCY_DECIMALS,
+                                    true
                                 )}
-                            </OpenDisputeButton>
-                        </SPAAnchor>
-                    )}
-                </OpenDisputeContainer>
-            </Footer>
-        </MarketContainer>
+                            </InfoContent>
+                        </Info>
+                        <Info>
+                            <InfoLabel>{t('market.number-of-participants-label')}:</InfoLabel>
+                            <InfoContent>{market.numberOfParticipants}</InfoContent>
+                        </Info>
+                    </FlexDivColumnCentered>
+                    <OpenDisputeContainer>
+                        {showNumberOfOpenDisputes ? (
+                            <OpenDisputeInfo
+                                numberOfOpenDisputes={
+                                    market.isMarketClosedForDisputes ? 0 : market.numberOfOpenDisputes
+                                }
+                            >
+                                {t('market.open-disputes-label')}
+                            </OpenDisputeInfo>
+                        ) : (
+                            <DataSource dataSource={market.dataSource} />
+                        )}
+                        {canOpenDispute && (
+                            <SPAAnchor href={buildOpenDisputeLink(market.address)}>
+                                <OpenDisputeButton type="secondary">
+                                    {t(
+                                        `market.button.${
+                                            market.isOpen ? 'dispute-market-label' : 'dispute-resolution-label'
+                                        }`
+                                    )}
+                                </OpenDisputeButton>
+                            </SPAAnchor>
+                        )}
+                    </OpenDisputeContainer>
+                </Footer>
+            </MarketContainer>
+        </>
     );
 };
 
