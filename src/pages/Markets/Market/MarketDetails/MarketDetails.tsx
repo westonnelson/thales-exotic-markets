@@ -34,6 +34,7 @@ import MaturityPhaseOpenBid from './MaturityPhaseOpenBid';
 import { MAX_GAS_LIMIT } from 'constants/network';
 import { TwitterShareButton } from 'react-share';
 import { LINKS } from 'constants/links';
+import MetaTags from 'react-meta-tags';
 
 type MarketDetailsProps = {
     market: MarketData;
@@ -113,6 +114,9 @@ const MarketDetails: React.FC<MarketDetailsProps> = ({ market }) => {
 
     return (
         <MarketContainer>
+            <MetaTags>
+                <meta property="og:title" content={market.question} />
+            </MetaTags>
             <TopContainer>
                 <MarketTitle fontSize={25} marginBottom={40}>
                     {market.question}
